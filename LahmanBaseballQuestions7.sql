@@ -35,12 +35,15 @@ limit 1;
 --How often from 1970 – 2016 was it the case that a team with the most wins also won the world series? 
 
 	--max winners
-		SELECT distinct yearid, 
-			max(W) OVER(partition by yearid) as highest_wins
+		SELECT distinct yearid, teamid,
+			--max(W) OVER(partition by yearid) as highest_wins
+			max(W)
 		FROM teams
 		WHERE yearid between 1970 and 2016
+		and ws_win = 'Y'
 		--AND higest_wins 
 		--GROUP BY yearid, teamid, name, wswin
+		GROUP BY yearid, teamid
 		order by yearid;
 	
 	--world series winners
@@ -51,7 +54,7 @@ limit 1;
 		GROUP BY yearid, teamid,w
 		order by yearid
 	
-	--max wins by year
+	--ws winner by year
 			WITH ws_winners as (SELECT  yearid, teamid,w
 			FROM  teams
 			WHERE wswin = 'Y'
@@ -64,17 +67,7 @@ limit 1;
 		ORDER BY yearid;
 		
 		--CTE
-			WITH ws_winners as (SELECT yearid, teamid, w
-								FROM teams
-								WHERE wswin = 'Y'
-								AND yearid between 1970 and 2016
-								GROUP BY yearid, teamid, w
-								order by yearid)
-		SELECT distinct teams.teamid, yearid,
-			max(teams.w) OVER(partition by yearid) as highest_wins
-			FROM ws_winners join teams using(yearid)
-			ORDER BY yearid;
------			
+			
 		WITH big_winners AS (SELECT distinct yearid, 
 						MAX(W) OVER(partition by yearid) as highest_wins
 						FROM teams
@@ -82,15 +75,30 @@ limit 1;
 						ORDER BY yearid)
 		SELECT count(distinct big_winners.yearid)
 		FROM big_winners FULL JOIN teams on big_winners.yearid=teams.yearid
-		WHERE  wswin = 'Y'
+		WHERE  wswin = 'Y';
 
 		
 	
-		
-	
-		
-		
-		
+SELECT distinct yearid, teamid, max(w)
+from teams
+WHERE yearid between 1970 and 2016
+and wswin = 'Y'
+group by  (yearid, teamid )
+order by max desc
+limit 46;
+
+SELECT teamid, yearid, w
+FROM teams
+WHERE wswin = 'Y'
+AND yearid between 1970 and 2016
+ORDER BY yearid;
+
+
+SELECT teamid, yearid, w, wswin
+FROM teams
+WHERE yearid between 1970 and 2016
+GROUP BY teamid, yearid, wswin,w
+ORDER BY yearid;
 	
 
 		--What percentage of the time?
