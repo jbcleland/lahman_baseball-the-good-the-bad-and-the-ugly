@@ -9,6 +9,7 @@ FROM batting
 LIMIT 5
 */
 
+
 --CTE Counts Career Length and Lists HR count from highest year.
 WITH clhr AS
 	(SELECT 
