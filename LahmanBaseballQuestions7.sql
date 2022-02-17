@@ -115,7 +115,7 @@ WITH big_winners as (SELECT yearid, teamid, w, wswin,
 				--GROUP BY yearid, teamid, name, wswin
 				GROUP BY yearid, teamid, w, wswin
 				order by yearid, w desc)
-SELECT (ROUND(count(*),1)/46)*100
+SELECT count(*)
 --yearid, teamid, max_wins
 from big_winners
 --WHERE yearid between 1970 and 2016
@@ -128,3 +128,21 @@ AND W=max_wins
 	
 
 		--What percentage of the time?
+		
+		
+WITH big_winners as (SELECT yearid, teamid, w, wswin,
+		        RANK() OVER (PARTITION BY yearid ) as win_rank, max(w) over (PARTITION BY yearid) as max_wins
+				FROM teams
+				WHERE yearid between 1970 and 2016
+				--and ws_win = 'Y'
+				--AND higest_wins 
+				--GROUP BY yearid, teamid, name, wswin
+				GROUP BY yearid, teamid, w, wswin
+				order by yearid, w desc)
+SELECT round((ROUND(count(*),1)/46)*100)
+--yearid, teamid, max_wins
+from big_winners
+--WHERE yearid between 1970 and 2016
+WHERE wswin = 'Y'
+AND W=max_wins
+--group by  (yearid, teamid,max_wins)
