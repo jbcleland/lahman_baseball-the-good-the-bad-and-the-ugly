@@ -3,7 +3,7 @@
 --  in both the National League (NL) and the American League (AL)? 
 --  Give their full name and the teams that they were managing 
 --	when they won the award.
-
+ 
 WITH 
 	cte AS
 			(SELECT
